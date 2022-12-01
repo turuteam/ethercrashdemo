@@ -1,0 +1,88 @@
+var bet_value_array = [20, 1, 1, 200, 400, 4000, 8000, 8000, 100, 1];
+var payout_value_array =  [1.95, 20, 25, 1.1, 1.55, 1.16, 1.6, 2.7, 1.25, 100];
+var bet_index = 0;
+var payout_index = 0;
+var myUserName = engine.getUsername();
+
+console.log("Script is running..");
+
+var currentBet = bet_value_array[0] * 100;
+var currentPayout = payout_value_array[0];
+
+engine.on('game_starting', function(info)
+
+ {
+    console.log('Game Starting in ' + info.time_till_start);
+    console.log(engine.lastGamePlay());
+    var gamePlayed = engine.lastGamePlay();
+    if(gamePlayed == "WON" || gamePlayed == "NOT_PLAYED") {
+    bet_index = 0;
+    payout_index = 0;
+        currentBet = bet_value_array[0] * 100;
+        currentPayout = payout_value_array[0];
+    console.log("you won", {"betindex": bet_index, "payoutindex": payout_index, "currentbet": currentBet, "currentPayout": currentPayout});
+    } else if (gamePlayed == "LOST") {
+        bet_index += 1;
+        currentBet = bet_value_array[bet_index] * 100;
+        payout_index += 1;
+        currentPayout = payout_value_array[payout_index];
+    console.log("you lost", {"betindex": bet_index, "payoutindex": payout_index, "currentbet": currentBet, "currentPayout": currentPayout});
+    } 
+    
+    engine.placeBet(roundBit(currentBet), Math.round(currentPayout * 100), function(error) {
+        console.log(error)
+    });
+});
+
+function roundBit(bet) {
+  return Math.round(bet / 100) * 100;
+}
+
+
+
+===========2.7/1.8
+
+var bet_value = 2;
+var payout_value =  2.68;
+var bet_index = 0;
+var myUserName = engine.getUsername();
+
+console.log("Script is running..");
+
+var currentBet = bet_value * 100;
+var currentPayout = payout_value;
+
+engine.on('game_starting', function(info)
+
+ {
+    console.log('Game Starting in ' + info.time_till_start);
+    console.log(engine.lastGamePlay());
+    var gamePlayed = engine.lastGamePlay();
+    if(gamePlayed == "WON" || gamePlayed == "NOT_PLAYED") {
+    bet_index = 0;
+    payout_index = 0;
+        currentBet = bet_value * 100;
+        currentPayout = payout_value;
+    console.log("you won", {"betindex": bet_index, "payoutindex": payout_index, "currentbet": currentBet, "currentPayout": currentPayout});
+    } else if (gamePlayed == "LOST") {
+        bet_index += 1;
+        currentBet = Math.ceil(currentBet * 1.8);
+        currentPayout = payout_value;
+        if(bet_index == 1 || bet_index ==2){
+            currentBet = 100
+            currentPayout = 2.68
+        }
+        if(bet_index % 5 ==0 ){
+            currentBet = Math.ceil(currentBet/1.1);
+        }
+    console.log("you lost", {"betindex": bet_index, "payoutindex": payout_index, "currentbet": currentBet, "currentPayout": currentPayout});
+    } 
+    
+    engine.placeBet(roundBit(currentBet), Math.round(currentPayout * 100), function(error) {
+        console.log(error)
+    });
+});
+
+function roundBit(bet) {
+  return Math.ceil(bet / 100) * 100;
+}
